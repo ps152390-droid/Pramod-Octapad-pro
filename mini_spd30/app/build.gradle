@@ -68,11 +68,10 @@ android {
     }
 
     sourceSets {
+        // Mini builds need samples in the regular app raw-resource set so the
+        // preset kit loader can resolve them without a fallback gap.
         main {
             assets.srcDirs = []
-        }
-        pro {
-            res.srcDirs += ['src/drum_sounds']
         }
     }
 

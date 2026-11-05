@@ -85,29 +85,12 @@ android {
         }
     }
     sourceSets {
-        // ── Per-flavor sound resources ──────────────────────────────────────
-        // Loop pad sounds (assets/) are used by LoopsActivity only.
-        // Drum pad sounds (raw WAVs) are used by MainActivity only.
-        // Shared dirs keep each flavor's APK free of the sounds it never plays.
-        //   full → both
-        //   loops → loop sounds only (no drum WAVs)
-        //   drums → drum sounds only (no loop sounds)
-        //   pro → drum sounds only (no loop WAVs)
+        // Mini builds need the packaged drum WAVs in the standard Android raw
+        // resources directory so the preset kit loader can resolve them by name.
+        // The project-level drum_sounds dir is a source convenience folder; do
+        // not treat it as the app resource set for this Mini variant.
         main {
-            assets.srcDirs = []          // loop sounds live in loop_assets now
-        }
-        full {
-            assets.srcDirs = ['src/loop_assets']
-            res.srcDirs += ['src/drum_sounds']
-        }
-        loops {
-            assets.srcDirs = ['src/loop_assets']
-        }
-        drums {
-            res.srcDirs += ['src/drum_sounds']
-        }
-        pro {
-            res.srcDirs += ['src/drum_sounds']
+            assets.srcDirs = []
         }
     }
 

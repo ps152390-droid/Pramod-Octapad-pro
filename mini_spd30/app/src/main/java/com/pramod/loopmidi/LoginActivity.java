@@ -237,16 +237,11 @@ public class LoginActivity extends Activity {
                         appKey = BuildConfig.FLAVOR;
                     }
 
+                    // Mini apps must only honor their own explicit mini-app access flag.
+                    // Falling back to the legacy full/pro app key would incorrectly
+                    // let the main-app Gmail access a Mini build when the Mini checkbox
+                    // was never granted.
                     Boolean allowed = appsSnap.child(appKey).getValue(Boolean.class);
-                    if (allowed == null && "miniPro".equals(appKey)) {
-                        allowed = appsSnap.child("pro").getValue(Boolean.class);
-                    }
-                    if (allowed == null && "miniSpd30".equals(appKey)) {
-                        allowed = appsSnap.child("spd30").getValue(Boolean.class);
-                    }
-                    if (allowed == null) {
-                        allowed = appsSnap.child(BuildConfig.FLAVOR).getValue(Boolean.class);
-                    }
                     if (allowed == null || !allowed) {
                         runOnUiThread(() -> {
                             if (txtLoginStatus != null)
