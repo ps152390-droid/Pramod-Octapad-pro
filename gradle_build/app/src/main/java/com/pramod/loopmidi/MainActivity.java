@@ -153,6 +153,7 @@ public class MainActivity extends Activity {
     private MidiOutputPort midiOutputPort;
     private MidiDevice openedMidiDevice;
     private SharedPreferences prefs;
+    private SeekBar seekAttack;
     private SeekBar seekChokeGroup;
     private SeekBar seekDelayLevel;
     private SeekBar seekDelayTime;
@@ -160,13 +161,26 @@ public class MainActivity extends Activity {
     private SeekBar seekEqLow;
     private SeekBar seekEqMid;
     private SeekBar seekPitch;
+    private SeekBar seekRelease;
     private SeekBar seekVolume;
     private SeekBar seekMasterVolume;
     private SeekBar seekMasterPitch;
+    private TextView txtAttackValue;
+    private TextView txtChokeGroupValue;
+    private TextView txtDelayLevelValue;
+    private TextView txtDelayTimeValue;
+    private TextView txtEqHighValue;
+    private TextView txtEqLowValue;
+    private TextView txtEqMidValue;
     private TextView txtKitName;
     private TextView txtKitNumber;
+    private TextView txtMasterPitchValue;
+    private TextView txtMasterVolumeValue;
     private TextView txtMidiStatus;
+    private TextView txtPitchValue;
+    private TextView txtReleaseValue;
     private TextView txtSelectedPad;
+    private TextView txtVolumeValue;
     private ArrayList<MidiOutputPort> midiOutputPorts = new ArrayList<>();
     private Button[] pads = new Button[8];
     private Uri[] selectedWavUris = new Uri[8];
@@ -1856,6 +1870,26 @@ public class MainActivity extends Activity {
         this.seekPitch = (SeekBar) findViewById(R.id.seekPitch);
         this.seekMasterVolume = (SeekBar) findViewById(R.id.seekMasterVolume);
         this.seekMasterPitch = (SeekBar) findViewById(R.id.seekMasterPitch);
+        this.seekDelayTime = (SeekBar) findViewById(R.id.seekDelayTime);
+        this.seekDelayLevel = (SeekBar) findViewById(R.id.seekDelayLevel);
+        this.seekEqHigh = (SeekBar) findViewById(R.id.seekEqHigh);
+        this.seekEqMid = (SeekBar) findViewById(R.id.seekEqMid);
+        this.seekEqLow = (SeekBar) findViewById(R.id.seekEqLow);
+        this.seekAttack = (SeekBar) findViewById(R.id.seekAttack);
+        this.seekRelease = (SeekBar) findViewById(R.id.seekRelease);
+        this.seekChokeGroup = (SeekBar) findViewById(R.id.seekChokeGroup);
+        this.txtVolumeValue = (TextView) findViewById(R.id.txtVolumeValue);
+        this.txtPitchValue = (TextView) findViewById(R.id.txtPitchValue);
+        this.txtDelayTimeValue = (TextView) findViewById(R.id.txtDelayTimeValue);
+        this.txtDelayLevelValue = (TextView) findViewById(R.id.txtDelayLevelValue);
+        this.txtEqHighValue = (TextView) findViewById(R.id.txtEqHighValue);
+        this.txtEqMidValue = (TextView) findViewById(R.id.txtEqMidValue);
+        this.txtEqLowValue = (TextView) findViewById(R.id.txtEqLowValue);
+        this.txtMasterVolumeValue = (TextView) findViewById(R.id.txtMasterVolumeValue);
+        this.txtMasterPitchValue = (TextView) findViewById(R.id.txtMasterPitchValue);
+        this.txtChokeGroupValue = (TextView) findViewById(R.id.txtChokeGroupValue);
+        this.txtAttackValue = (TextView) findViewById(R.id.txtAttackValue);
+        this.txtReleaseValue = (TextView) findViewById(R.id.txtReleaseValue);
         this.fxControlBar = findViewById(R.id.fxControlBar);
         this.advControlBar = findViewById(R.id.advControlBar);
 
@@ -1891,12 +1925,6 @@ public class MainActivity extends Activity {
         // ─────────────────────────────────────────────────────────────────────
 
         this.chkDelay = (CheckBox) findViewById(R.id.chkDelay);
-        this.seekDelayTime = (SeekBar) findViewById(R.id.seekDelayTime);
-        this.seekDelayLevel = (SeekBar) findViewById(R.id.seekDelayLevel);
-        this.seekEqHigh = (SeekBar) findViewById(R.id.seekEqHigh);
-        this.seekEqMid = (SeekBar) findViewById(R.id.seekEqMid);
-        this.seekEqLow = (SeekBar) findViewById(R.id.seekEqLow);
-        this.seekChokeGroup = (SeekBar) findViewById(R.id.seekChokeGroup);
         AudioEngine audioEngine = new AudioEngine(this);
         this.audioEngine = audioEngine;
         audioEngine.start();
@@ -2086,12 +2114,20 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void updateSeekBarPercentageValue(SeekBar seekBar, TextView valueView) {
+        if (seekBar == null || valueView == null) return;
+        int max = Math.max(1, seekBar.getMax());
+        int percent = Math.round((seekBar.getProgress() * 100f) / max);
+        valueView.setText(percent + "%");
+    }
+
     private void initSeekBars() {
         this.seekVolume.setMax(100);
         this.seekPitch.setMax(100);
         this.seekVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.12
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtVolumeValue);
                 // ── Bank-aware volume ──────────────────────────────────────
                 // BANK_B → only Bank B; LAYER_AB → BOTH banks (A+B play together);
                 // otherwise → Bank A.
@@ -2122,6 +2158,7 @@ public class MainActivity extends Activity {
         this.seekPitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.13
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtPitchValue);
                 // ── Bank-aware pitch ───────────────────────────────────────
                 // LAYER_AB → both banks move together so the A+B layer stays in
                 // tune; otherwise the active bank only.
@@ -2154,6 +2191,7 @@ public class MainActivity extends Activity {
         this.seekMasterVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.14
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtMasterVolumeValue);
                 MainActivity.this.drumMasterVolume = Math.max(0f, Math.min(1f, progress / 100.0f));
                 // Persist on user drag only — programmatic setProgress (CC knob /
                 // resume refresh) must not spam disk writes.
@@ -2179,6 +2217,7 @@ public class MainActivity extends Activity {
         this.seekMasterPitch.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.15
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtMasterPitchValue);
                 MainActivity.this.drumMasterPitch = Math.max(0.1f, Math.min(2.0f, progress / 100.0f));
                 if (fromUser) {
                     MainActivity.this.prefs.edit()
@@ -2194,6 +2233,24 @@ public class MainActivity extends Activity {
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onStopTrackingTouch(SeekBar s) {
             }
+        });
+        this.seekAttack.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtAttackValue);
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar s) {}
+            @Override public void onStopTrackingTouch(SeekBar s) {}
+        });
+        this.seekRelease.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtReleaseValue);
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar s) {}
+            @Override public void onStopTrackingTouch(SeekBar s) {}
         });
         this.chkDelay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() { // from class: com.pramod.loopmidi.MainActivity.16
             @Override // android.widget.CompoundButton.OnCheckedChangeListener
@@ -2219,6 +2276,7 @@ public class MainActivity extends Activity {
         this.seekDelayTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.15
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtDelayTimeValue);
                 if (fromUser) {
                     // ── Bank-aware delay time ──────────────────────────────
                     // LAYER_AB → both banks update together.
@@ -2246,6 +2304,7 @@ public class MainActivity extends Activity {
         this.seekDelayLevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.16
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtDelayLevelValue);
                 if (fromUser) {
                     // ── Bank-aware delay level ─────────────────────────────
                     // LAYER_AB → both banks update together.
@@ -2273,6 +2332,7 @@ public class MainActivity extends Activity {
         this.seekEqHigh.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.17
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtEqHighValue);
                 if (fromUser) {
                     // ── Bank-aware EQ High ─────────────────────────────────
                     // LAYER_AB → both banks update together.
@@ -2300,6 +2360,7 @@ public class MainActivity extends Activity {
         this.seekEqMid.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.18
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtEqMidValue);
                 if (fromUser) {
                     // ── Bank-aware EQ Mid ──────────────────────────────────
                     // LAYER_AB → both banks update together.
@@ -2327,6 +2388,7 @@ public class MainActivity extends Activity {
         this.seekEqLow.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.19
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtEqLowValue);
                 if (fromUser) {
                     // ── Bank-aware EQ Low ──────────────────────────────────
                     // LAYER_AB → both banks update together.
@@ -2354,6 +2416,7 @@ public class MainActivity extends Activity {
         this.seekChokeGroup.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // from class: com.pramod.loopmidi.MainActivity.20
             @Override // android.widget.SeekBar.OnSeekBarChangeListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateSeekBarPercentageValue(seekBar, MainActivity.this.txtChokeGroupValue);
                 if (fromUser) {
                     // ── Bank-aware choke group ─────────────────────────────
                     // LAYER_AB → both banks update together.
