@@ -85,12 +85,23 @@ android {
         }
     }
     sourceSets {
-        // Mini builds need the packaged drum WAVs in the standard Android raw
-        // resources directory so the preset kit loader can resolve them by name.
-        // The project-level drum_sounds dir is a source convenience folder; do
-        // not treat it as the app resource set for this Mini variant.
+        // Match the main app wiring: the preset drum WAVs live in a dedicated
+        // drum_sounds source-set, and we also keep the copied raw resources in
+        // src/main/res/raw so Android includes them in the Mini APK reliably.
         main {
             assets.srcDirs = []
+        }
+        full {
+            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
+        }
+        loops {
+            res.srcDirs += ['src/main/res/raw']
+        }
+        drums {
+            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
+        }
+        pro {
+            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
         }
     }
 

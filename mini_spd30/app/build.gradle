@@ -68,10 +68,14 @@ android {
     }
 
     sourceSets {
-        // Mini builds need samples in the regular app raw-resource set so the
-        // preset kit loader can resolve them without a fallback gap.
+        // Match the main app wiring so the Mini SPD-30 APK loads the same set of
+        // percussion samples from the drum_sounds source folder and the copied raw
+        // resources kept under src/main/res/raw.
         main {
             assets.srcDirs = []
+        }
+        pro {
+            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
         }
     }
 
