@@ -954,7 +954,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
             btnGrantAccess.setOnClickListener(v ->
                     showEditAppsDialog(entry.uid, entry.email, entry.displayName,
                             entry.hasFull, entry.hasLoops, entry.hasDrums, entry.hasPro,
-                            entry.hasPiano, entry.hasSpd30));
+                            entry.hasPiano, entry.hasSpd30, entry.hasMiniPro,
+                            entry.hasMiniSpd30));
             btnRow.addView(btnGrantAccess, new LinearLayout.LayoutParams(
                     0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         } else {
