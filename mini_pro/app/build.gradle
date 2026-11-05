@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace 'com.pramod.loopmidi.mini'
+    namespace 'com.pramod.loopmidi.pro.mini'
     compileSdk 35
     defaultConfig {
-        applicationId 'com.pramod.loopmidi.mini'
+        applicationId 'com.pramod.loopmidi.pro.mini'
         minSdk 23
         targetSdk 35
         versionCode 1

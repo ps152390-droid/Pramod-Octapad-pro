@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.pramod.loopmidi.mini'
+    namespace 'pramod.octapad.spd30.mini'
     compileSdk 35
 
     defaultConfig {
