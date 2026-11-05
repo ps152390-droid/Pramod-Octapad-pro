@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'gradle_build/**'
+      - 'mini_pro/**'
       - '.github/workflows/build-loopmidi.yml'
   workflow_dispatch:    # Manual trigger from GitHub Actions UI
 
@@ -48,14 +49,20 @@ jobs:
           gradle-version: '8.11.1'
 
       # ── 5. Create Gradle wrapper inside the project ───────────────────────
-      - name: Create Gradle wrapper
+      - name: Create Gradle wrapper (main app)
         working-directory: gradle_build
         run: |
           gradle wrapper --gradle-version 8.11.1 --distribution-type bin
           chmod +x gradlew
 
+      - name: Create Gradle wrapper (Mini Pro)
+        working-directory: mini_pro
+        run: |
+          gradle wrapper --gradle-version 8.11.1 --distribution-type bin
+          chmod +x gradlew
+
       # ── 7. Build all 4 app flavors ────────────────────────────────────────
-      - name: Build all 4 Debug APKs
+      - name: Build all 4 Debug APKs (main app)
         working-directory: gradle_build
         run: |
           set -o pipefail
@@ -65,10 +72,22 @@ jobs:
             --warning-mode all \
             2>&1 | tee /tmp/build_debug.log
 
+      - name: Build all 4 Debug APKs (Mini Pro)
+        working-directory: mini_pro
+        run: |
+          set -o pipefail
+          ./gradlew assembleFullDebug assembleLoopsDebug assembleDrumsDebug assembleProDebug \
+            --no-daemon \
+            --stacktrace \
+            --warning-mode all \
+            2>&1 | tee /tmp/mini_pro_build.log
+
       # ── 8. Show logs on failure ────────────────────────────────────────────
       - name: Show build log on failure
         if: failure()
-        run: tail -n 400 /tmp/build_debug.log || true
+        run: |
+          echo "===== Main app log =====" && tail -n 200 /tmp/build_debug.log || true
+          echo "===== Mini Pro log =====" && tail -n 200 /tmp/mini_pro_build.log || true
 
       # ── 9. Collect all 4 APKs ─────────────────────────────────────────────
       - name: Rename APKs
@@ -85,6 +104,14 @@ jobs:
              "artifacts/PramodOctapad-Drums-v1.0-debug-${SHORT}.apk"
           cp "gradle_build/app/build/outputs/apk/pro/debug/app-pro-debug.apk" \
              "artifacts/PramodOctapad-Pro-v1.0-debug-${SHORT}.apk"
+          cp "mini_pro/app/build/outputs/apk/full/debug/app-full-debug.apk" \
+             "artifacts/PramodOctapad-Mini-Full-v1.0-debug-${SHORT}.apk"
+          cp "mini_pro/app/build/outputs/apk/loops/debug/app-loops-debug.apk" \
+             "artifacts/PramodOctapad-Mini-Loops-v1.0-debug-${SHORT}.apk"
+          cp "mini_pro/app/build/outputs/apk/drums/debug/app-drums-debug.apk" \
+             "artifacts/PramodOctapad-Mini-Drums-v1.0-debug-${SHORT}.apk"
+          cp "mini_pro/app/build/outputs/apk/pro/debug/app-pro-debug.apk" \
+             "artifacts/PramodOctapad-Mini-Pro-v1.0-debug-${SHORT}.apk"
           echo "=== Built APKs ===" && ls -lh artifacts/
 
       # ── 10. Upload all 4 APKs as separate artifacts ───────────────────────
@@ -124,11 +151,47 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
+      - name: Upload Mini Full APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PramodOctapad-Mini-Full-Debug-APK
+          path: artifacts/PramodOctapad-Mini-Full-v1.0-debug-*.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload Mini Loops APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PramodOctapad-Mini-Loops-Debug-APK
+          path: artifacts/PramodOctapad-Mini-Loops-v1.0-debug-*.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload Mini Drums APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PramodOctapad-Mini-Drums-Debug-APK
+          path: artifacts/PramodOctapad-Mini-Drums-v1.0-debug-*.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload Mini Pro APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PramodOctapad-Mini-Pro-Debug-APK
+          path: artifacts/PramodOctapad-Mini-Pro-v1.0-debug-*.apk
+          retention-days: 30
+          if-no-files-found: error
+
       # ── 11. Build summary ─────────────────────────────────────────────────
       - name: Print build summary
         if: always()
         run: |
-          echo "## 📦 Build Summary — 4 APKs" >> $GITHUB_STEP_SUMMARY
+          echo "## 📦 Build Summary — 8 APKs" >> $GITHUB_STEP_SUMMARY
           echo "| APK | Package | Size |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|---------|------|" >> $GITHUB_STEP_SUMMARY
           declare -A PKG=(
@@ -136,10 +199,17 @@ jobs:
             [Loops]="com.pramod.loopmidi.loops"
             [Drums]="com.pramod.loopmidi.drums"
             [Pro]="com.pramod.loopmidi.pro"
+            [MiniFull]="com.pramod.loopmidi.pro.mini"
+            [MiniLoops]="com.pramod.loopmidi.pro.mini.loops"
+            [MiniDrums]="com.pramod.loopmidi.pro.mini.drums"
+            [MiniPro]="com.pramod.loopmidi.pro.mini"
           )
           for flavor in Full Loops Drums Pro; do
-            f="artifacts/PramodOctapad-${flavor}-v1.0-debug-${{ github.sha }}"; f="${f:0:55}"; \
             apk=$(ls artifacts/PramodOctapad-${flavor}-*.apk 2>/dev/null | head -1)
+            [ -f "$apk" ] && echo "| \`$(basename $apk)\` | \`${PKG[$flavor]}\` | $(du -sh $apk | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+          done
+          for flavor in MiniFull MiniLoops MiniDrums MiniPro; do
+            apk=$(ls artifacts/PramodOctapad-Mini-${flavor#Mini}-*.apk 2>/dev/null | head -1)
             [ -f "$apk" ] && echo "| \`$(basename $apk)\` | \`${PKG[$flavor]}\` | $(du -sh $apk | cut -f1) |" >> $GITHUB_STEP_SUMMARY
           done
           echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
