@@ -108,6 +108,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private CheckBox cbManualPro;
     private CheckBox cbManualPiano;
     private CheckBox cbManualSpd30;
+    private CheckBox cbManualMiniPro;
+    private CheckBox cbManualMiniSpd30;
 
     private enum Filter { PENDING, ACTIVE, DEACTIVATED }
     private Filter currentFilter = Filter.PENDING;
@@ -120,6 +122,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private static class UserEntry {
         String uid, email, displayName, deviceToken;
         boolean hasFull, hasLoops, hasDrums, hasPro, hasPiano, hasSpd30;
+        boolean hasMiniPro, hasMiniSpd30;
         boolean isDeactivated;
         boolean needsAccessSelection;
         String accessType;
@@ -127,7 +130,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         long expiresAt;
 
         boolean hasAnyAppAccess() {
-            return hasFull || hasLoops || hasDrums || hasPro || hasPiano || hasSpd30;
+            return hasFull || hasLoops || hasDrums || hasPro || hasPiano || hasSpd30
+                    || hasMiniPro || hasMiniSpd30;
         }
 
         boolean isTrialExpired(long now) {
@@ -390,8 +394,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
         cbManualPro = makeCheckBox("Pro", false);
         cbManualPiano = makeCheckBox("Piano", false);
         cbManualSpd30 = makeCheckBox("SPD-30", false);
+        cbManualMiniPro = makeCheckBox("Mini Pro", false);
+        cbManualMiniSpd30 = makeCheckBox("Mini SPD-30", false);
         addAccessCheckboxRows(cbRows, cbManualFull, cbManualLoops, cbManualDrums,
-                cbManualPro, cbManualPiano, cbManualSpd30);
+                cbManualPro, cbManualPiano, cbManualSpd30,
+                cbManualMiniPro, cbManualMiniSpd30);
         root.addView(cbRows, matchWidth(dp(2)));
 
         Button btnManualActivate = new Button(this);
@@ -474,7 +481,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         CheckBox cbPro = makeCheckBox("Pro", false);
         CheckBox cbPiano = makeCheckBox("Piano", false);
         CheckBox cbSpd30 = makeCheckBox("SPD-30", false);
-        addAccessCheckboxRows(cbRows, cbFull, cbLoops, cbDrums, cbPro, cbPiano, cbSpd30);
+        CheckBox cbMiniPro = makeCheckBox("Mini Pro", false);
+        CheckBox cbMiniSpd30 = makeCheckBox("Mini SPD-30", false);
+        addAccessCheckboxRows(cbRows, cbFull, cbLoops, cbDrums, cbPro, cbPiano, cbSpd30,
+                cbMiniPro, cbMiniSpd30);
         row.addView(cbRows);
 
         // Action buttons
@@ -487,7 +497,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         btnActivate.setOnClickListener(v ->
                 showActivationTypeDialog(uid, email, displayName,
                         cbFull.isChecked(), cbLoops.isChecked(), cbDrums.isChecked(),
-                        cbPro.isChecked(), cbPiano.isChecked(), cbSpd30.isChecked()));
+                        cbPro.isChecked(), cbPiano.isChecked(), cbSpd30.isChecked(),
+                        cbMiniPro.isChecked(), cbMiniSpd30.isChecked()));
         btnRow.addView(btnActivate, new LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -664,6 +675,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         entry.hasSpd30 = appsSnap.exists()
                 && (readAppAccess(appsSnap, "spd30")
                 || (!appsSnap.child("spd30").exists() && readAppAccess(appsSnap, "pro")));
+        entry.hasMiniPro = appsSnap.exists() && readAppAccess(appsSnap, "miniPro");
+        entry.hasMiniSpd30 = appsSnap.exists() && readAppAccess(appsSnap, "miniSpd30");
 
         entry.activatedAt = readTimestamp(child.child("activatedAt"));
         entry.expiresAt = readTimestamp(child.child("expiresAt"));
@@ -913,7 +926,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
                         + (entry.hasDrums ? "✅Drums " : "❌Drums ")
                         + (entry.hasPro ? "✅Pro " : "❌Pro ")
                         + (entry.hasPiano ? "✅Piano " : "❌Piano ")
-                        + (entry.hasSpd30 ? "✅SPD-30" : "❌SPD-30")
+                        + (entry.hasSpd30 ? "✅SPD-30 " : "❌SPD-30 ")
+                        + (entry.hasMiniPro ? "✅Mini Pro " : "❌Mini Pro ")
+                        + (entry.hasMiniSpd30 ? "✅Mini SPD-30" : "❌Mini SPD-30")
                         + (entry.deviceToken != null ? "  |  🔒 Device locked" : "  |  🔓 Unlocked"));
 
         // Action buttons
@@ -958,7 +973,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
             btnEdit.setOnClickListener(v ->
                     showEditAppsDialog(entry.uid, entry.email, entry.displayName,
                             entry.hasFull, entry.hasLoops, entry.hasDrums, entry.hasPro,
-                            entry.hasPiano, entry.hasSpd30));
+                            entry.hasPiano, entry.hasSpd30, entry.hasMiniPro,
+                            entry.hasMiniSpd30));
             btnRow.addView(btnEdit, ep);
 
             if (!TextUtils.isEmpty(entry.deviceToken)) {
@@ -989,7 +1005,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         CheckBox cbPro = makeCheckBox("Pro", false);
         CheckBox cbPiano = makeCheckBox("Piano", false);
         CheckBox cbSpd30 = makeCheckBox("SPD-30", false);
-        addAccessCheckboxRows(layout, cbFull, cbLoops, cbDrums, cbPro, cbPiano, cbSpd30);
+        CheckBox cbMiniPro = makeCheckBox("Mini Pro", false);
+        CheckBox cbMiniSpd30 = makeCheckBox("Mini SPD-30", false);
+        addAccessCheckboxRows(layout, cbFull, cbLoops, cbDrums, cbPro, cbPiano, cbSpd30,
+                cbMiniPro, cbMiniSpd30);
 
         new AlertDialog.Builder(this)
                 .setTitle("Grant app access")
@@ -999,7 +1018,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
                         activateUser(entry.uid, entry.email, entry.displayName,
                                 cbFull.isChecked(), cbLoops.isChecked(), cbDrums.isChecked(),
                                 cbPro.isChecked(), cbPiano.isChecked(),
-                                cbSpd30.isChecked(), false, 0))
+                                cbSpd30.isChecked(), cbMiniPro.isChecked(), cbMiniSpd30.isChecked(),
+                                false, 0))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
@@ -1008,17 +1028,19 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void showActivationTypeDialog(String uid, String email, String displayName,
                                           boolean full, boolean loops, boolean drums,
-                                          boolean pro, boolean piano, boolean spd30) {
+                                          boolean pro, boolean piano, boolean spd30,
+                                          boolean miniPro, boolean miniSpd30) {
         String[] choices = {"Permanent", "Trial"};
         new AlertDialog.Builder(this)
                 .setTitle("Access duration")
                 .setItems(choices, (dialog, index) -> {
                     if (index == 0) {
                         activateUser(uid, email, displayName,
-                                full, loops, drums, pro, piano, spd30, false, 0);
+                                full, loops, drums, pro, piano, spd30, miniPro, miniSpd30,
+                                false, 0);
                     } else {
                         showTrialExpiryPicker(uid, email, displayName,
-                                full, loops, drums, pro, piano, spd30);
+                                full, loops, drums, pro, piano, spd30, miniPro, miniSpd30);
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -1027,7 +1049,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void showTrialExpiryPicker(String uid, String email, String displayName,
                                        boolean full, boolean loops, boolean drums,
-                                       boolean pro, boolean piano, boolean spd30) {
+                                       boolean pro, boolean piano, boolean spd30,
+                                       boolean miniPro, boolean miniSpd30) {
         Calendar initial = Calendar.getInstance();
         initial.add(Calendar.DAY_OF_YEAR, 1);
         DatePickerDialog datePicker = new DatePickerDialog(
@@ -1050,7 +1073,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
                                     return;
                                 }
                                 activateUser(uid, email, displayName,
-                                        full, loops, drums, pro, piano, spd30, true, expiresAt);
+                                        full, loops, drums, pro, piano, spd30, miniPro,
+                                        miniSpd30, true, expiresAt);
                             },
                             initial.get(Calendar.HOUR_OF_DAY),
                             initial.get(Calendar.MINUTE),
@@ -1067,6 +1091,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private void activateUser(String uid, String email, String displayName,
                               boolean full, boolean loops, boolean drums, boolean pro,
                               boolean piano, boolean spd30,
+                              boolean miniPro, boolean miniSpd30,
                               boolean trial, long expiresAt) {
         Map<String, Object> data = new HashMap<>();
         data.put("email",       email != null ? email : "");
@@ -1082,6 +1107,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         appsMap.put("pro", pro);
         appsMap.put("piano", piano);
         appsMap.put("spd30", spd30);
+        appsMap.put("miniPro", miniPro);
+        appsMap.put("miniSpd30", miniSpd30);
         data.put("allowedApps", appsMap);
 
         usersRef.child(uid).setValue(data).addOnCompleteListener(this, saveTask -> {
@@ -1117,7 +1144,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void saveAllowedApps(String uid, String email,
                                  boolean full, boolean loops, boolean drums, boolean pro,
-                                 boolean piano, boolean spd30) {
+                                 boolean piano, boolean spd30,
+                                 boolean miniPro, boolean miniSpd30) {
         Map<String, Object> appsMap = new HashMap<>();
         appsMap.put("full",  full);
         appsMap.put("loops", loops);
@@ -1125,6 +1153,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         appsMap.put("pro", pro);
         appsMap.put("piano", piano);
         appsMap.put("spd30", spd30);
+        appsMap.put("miniPro", miniPro);
+        appsMap.put("miniSpd30", miniSpd30);
         usersRef.child(uid).child("allowedApps").setValue(appsMap)
                 .addOnCompleteListener(this, task -> {
                     if (!task.isSuccessful()) {
@@ -1251,6 +1281,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         appsMap.put("pro", cbManualPro.isChecked());
         appsMap.put("piano", cbManualPiano.isChecked());
         appsMap.put("spd30", cbManualSpd30.isChecked());
+        appsMap.put("miniPro", cbManualMiniPro.isChecked());
+        appsMap.put("miniSpd30", cbManualMiniSpd30.isChecked());
         data.put("allowedApps", appsMap);
 
         usersRef.child(uid).setValue(data);
@@ -1260,7 +1292,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void showEditAppsDialog(String uid, String email, String displayName,
                                     boolean curFull, boolean curLoops, boolean curDrums,
-                                    boolean curPro, boolean curPiano, boolean curSpd30) {
+                                    boolean curPro, boolean curPiano, boolean curSpd30,
+                                    boolean curMiniPro, boolean curMiniSpd30) {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         int pad = dp(20);
@@ -1272,12 +1305,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
         CheckBox cbPro = makeCheckBox("Pro (com.pramod.loopmidi.pro)", curPro);
         CheckBox cbPiano = makeCheckBox("Piano (com.pramod.piano)", curPiano);
         CheckBox cbSpd30 = makeCheckBox("SPD-30 (pramod.octapad.spd30)", curSpd30);
+        CheckBox cbMiniPro = makeCheckBox("Mini Pro (com.pramod.loopmidi.pro.mini)", curMiniPro);
+        CheckBox cbMiniSpd30 = makeCheckBox("Mini SPD-30 (pramod.octapad.spd30.mini)", curMiniSpd30);
         layout.addView(cbFull);
         layout.addView(cbLoops);
         layout.addView(cbDrums);
         layout.addView(cbPro);
         layout.addView(cbPiano);
         layout.addView(cbSpd30);
+        layout.addView(cbMiniPro);
+        layout.addView(cbMiniSpd30);
 
         new AlertDialog.Builder(this)
                 .setTitle("APK Access — " + (!TextUtils.isEmpty(email) ? email : uid))
@@ -1285,7 +1322,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 .setPositiveButton("Save", (d, w) ->
                         saveAllowedApps(uid, email,
                                 cbFull.isChecked(), cbLoops.isChecked(), cbDrums.isChecked(),
-                                cbPro.isChecked(), cbPiano.isChecked(), cbSpd30.isChecked()))
+                                cbPro.isChecked(), cbPiano.isChecked(), cbSpd30.isChecked(),
+                                cbMiniPro.isChecked(), cbMiniSpd30.isChecked()))
                 .setNegativeButton("Cancel", null)
                 .show();
     }

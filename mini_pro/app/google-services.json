@@ -153,6 +153,154 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070428492610:android:69ddde23eed6f75eb0eedb",
+        "android_client_info": {
+          "package_name": "com.pramod.loopmidi.pro.mini"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070428492610-1va3gahirkv14obc9787q9k6e431ua9f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pramod.loopmidi.pro.mini",
+            "certificate_hash": "9324732a57a16f3f5244991f32a4bbd178ff6659"
+          }
+        },
+        {
+          "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM5iLKu7EBcodDUgBiGadmIAsMv82yxhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070428492610:android:5e9a1dd2f90902d4b0eedb",
+        "android_client_info": {
+          "package_name": "com.pramod.piano"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070428492610-3pv4snd54mplhpqmpqna0jh9gklbmi62.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pramod.piano",
+            "certificate_hash": "9324732a57a16f3f5244991f32a4bbd178ff6659"
+          }
+        },
+        {
+          "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM5iLKu7EBcodDUgBiGadmIAsMv82yxhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070428492610:android:bc3bbb6754252830b0eedb",
+        "android_client_info": {
+          "package_name": "pramod.octapad.spd30"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070428492610-p3kia9l8lpfe2oe96886j1qq0bb04is9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pramod.octapad.spd30",
+            "certificate_hash": "9324732a57a16f3f5244991f32a4bbd178ff6659"
+          }
+        },
+        {
+          "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM5iLKu7EBcodDUgBiGadmIAsMv82yxhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070428492610:android:bd9fe80ceaa0b7c4b0eedb",
+        "android_client_info": {
+          "package_name": "pramod.octapad.spd30.mini"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070428492610-c3897qhr58ielvbig7s3jneefa56k3m2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pramod.octapad.spd30.mini",
+            "certificate_hash": "9324732a57a16f3f5244991f32a4bbd178ff6659"
+          }
+        },
+        {
+          "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM5iLKu7EBcodDUgBiGadmIAsMv82yxhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070428492610-9vhr25vajqnd8dtmjg1tqcsiblchjvv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
