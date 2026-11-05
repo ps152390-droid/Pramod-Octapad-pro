@@ -1,4 +1,4 @@
-package com.pramod.loopmidi.mini;
+package com.pramod.loopmidi.pro.mini;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;

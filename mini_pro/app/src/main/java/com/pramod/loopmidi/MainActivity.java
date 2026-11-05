@@ -1,4 +1,4 @@
-package com.pramod.loopmidi.mini;
+package com.pramod.loopmidi.pro.mini;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,7 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.documentfile.provider.DocumentFile;
-import com.pramod.loopmidi.mini.AudioEngine;
+import com.pramod.loopmidi.pro.mini.AudioEngine;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

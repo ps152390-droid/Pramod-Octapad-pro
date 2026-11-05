@@ -1,4 +1,4 @@
-package com.pramod.loopmidi.mini;
+package com.pramod.loopmidi.pro.mini;
 
 import android.content.Context;
 import android.content.SharedPreferences;

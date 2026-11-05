@@ -1,4 +1,4 @@
-package com.pramod.loopmidi.mini;
+package pramod.octapad.spd30.mini;
 
 public final class MidiPlaybackPolicy {
     private MidiPlaybackPolicy() {}

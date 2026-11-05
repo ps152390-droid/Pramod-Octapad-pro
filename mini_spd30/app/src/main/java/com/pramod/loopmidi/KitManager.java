@@ -1,4 +1,4 @@
-package com.pramod.loopmidi.mini;
+package pramod.octapad.spd30.mini;
 
 import android.content.Context;
 import android.net.Uri;

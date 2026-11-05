@@ -1,4 +1,4 @@
-package com.pramod.loopmidi.mini;
+package pramod.octapad.spd30.mini;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,7 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.documentfile.provider.DocumentFile;
-import com.pramod.loopmidi.mini.AudioEngine;
+import pramod.octapad.spd30.mini.AudioEngine;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioPlaybackCaptureConfiguration;
