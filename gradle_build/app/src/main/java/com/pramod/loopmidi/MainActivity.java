@@ -2121,6 +2121,21 @@ public class MainActivity extends Activity {
         valueView.setText(percent + "%");
     }
 
+    private void updateAllSeekBarPercentageValues() {
+        updateSeekBarPercentageValue(this.seekVolume, this.txtVolumeValue);
+        updateSeekBarPercentageValue(this.seekPitch, this.txtPitchValue);
+        updateSeekBarPercentageValue(this.seekMasterVolume, this.txtMasterVolumeValue);
+        updateSeekBarPercentageValue(this.seekMasterPitch, this.txtMasterPitchValue);
+        updateSeekBarPercentageValue(this.seekAttack, this.txtAttackValue);
+        updateSeekBarPercentageValue(this.seekRelease, this.txtReleaseValue);
+        updateSeekBarPercentageValue(this.seekDelayTime, this.txtDelayTimeValue);
+        updateSeekBarPercentageValue(this.seekDelayLevel, this.txtDelayLevelValue);
+        updateSeekBarPercentageValue(this.seekEqHigh, this.txtEqHighValue);
+        updateSeekBarPercentageValue(this.seekEqMid, this.txtEqMidValue);
+        updateSeekBarPercentageValue(this.seekEqLow, this.txtEqLowValue);
+        updateSeekBarPercentageValue(this.seekChokeGroup, this.txtChokeGroupValue);
+    }
+
     private void initSeekBars() {
         this.seekVolume.setMax(100);
         this.seekPitch.setMax(100);
@@ -2531,6 +2546,7 @@ public class MainActivity extends Activity {
             if (seekEqLow  != null) seekEqLow.setProgress(((int) (padEqLow[pad]  / 0.15f)) + 100);
             if (seekChokeGroup != null) seekChokeGroup.setProgress(padChokeGroup[pad]);
         }
+        updateAllSeekBarPercentageValues();
     }
 
     public void playPadSound(int index) {
