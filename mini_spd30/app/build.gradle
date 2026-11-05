@@ -62,6 +62,7 @@ android {
     productFlavors {
         pro {
             dimension "system"
+            applicationId "pramod.octapad.spd30.mini"
             resValue "string", "app_name", "Pramod Octapad SPD-30 Mini"
         }
     }
