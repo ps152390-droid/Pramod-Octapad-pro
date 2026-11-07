@@ -63,19 +63,19 @@ android {
         pro {
             dimension "system"
             applicationId "pramod.octapad.spd30.mini"
-            resValue "string", "app_name", "Pramod Octapad SPD-30 Mini"
+            resValue "string", "app_name", "Pramod Mini Spd 30"
         }
     }
 
     sourceSets {
-        // Match the main app wiring so the Mini SPD-30 APK loads the same set of
-        // percussion samples from the drum_sounds source folder and the copied raw
-        // resources kept under src/main/res/raw.
+        // Match the main app wiring: keep the canonical drum samples in
+        // src/drum_sounds/raw and avoid duplicating the same raw WAVs in
+        // src/main/res/raw, which can create conflicting resource IDs.
         main {
             assets.srcDirs = []
         }
         pro {
-            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
+            res.srcDirs += ['src/drum_sounds']
         }
     }
 

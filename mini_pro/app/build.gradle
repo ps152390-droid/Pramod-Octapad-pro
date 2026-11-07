@@ -64,44 +64,45 @@ android {
         full {
             dimension "system"
             applicationId "com.pramod.loopmidi.pro.mini"
-            resValue "string", "app_name", "Pramod Octapad Mini Full"
+            resValue "string", "app_name", "Pramod Mini"
         }
         // ── Loops: sirf LoopsActivity ─────────────────────────────────────────
         loops {
             dimension "system"
             applicationId "com.pramod.loopmidi.pro.mini"
-            resValue "string", "app_name", "Pramod Octapad Mini Loops"
+            resValue "string", "app_name", "Pramod Mini"
         }
         // ── Drums: sirf MainActivity (Drum Pad) ───────────────────────────────
         drums {
             dimension "system"
             applicationId "com.pramod.loopmidi.pro.mini"
-            resValue "string", "app_name", "Pramod Octapad Mini Drums"
+            resValue "string", "app_name", "Pramod Mini"
         }
         pro {
             dimension "system"
             applicationId "com.pramod.loopmidi.pro.mini"
-            resValue "string", "app_name", "Pramod Octapad Mini Pro"
+            resValue "string", "app_name", "Pramod Mini"
         }
     }
     sourceSets {
-        // Match the main app wiring: the preset drum WAVs live in a dedicated
-        // drum_sounds source-set, and we also keep the copied raw resources in
-        // src/main/res/raw so Android includes them in the Mini APK reliably.
+        // Match the main app wiring: keep the drum pads on the dedicated
+        // src/drum_sounds/raw source-set and avoid duplicate raw resource IDs.
         main {
             assets.srcDirs = []
         }
         full {
-            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
+            res.srcDirs += ['src/drum_sounds']
         }
         loops {
-            res.srcDirs += ['src/main/res/raw']
+            // Keep the loop-only flavor lean and avoid duplicate raw resource IDs
+            // from the drum pack; the drum pad code resolves its own samples via
+            // the dedicated src/drum_sounds/raw set.
         }
         drums {
-            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
+            res.srcDirs += ['src/drum_sounds']
         }
         pro {
-            res.srcDirs += ['src/drum_sounds', 'src/main/res/raw']
+            res.srcDirs += ['src/drum_sounds']
         }
     }
 
