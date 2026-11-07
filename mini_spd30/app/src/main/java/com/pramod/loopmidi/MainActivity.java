@@ -386,6 +386,14 @@ public class MainActivity extends Activity {
         return i;
     }
 
+    private int resolveRawResourceId(String baseName) {
+        int id = getResources().getIdentifier(baseName, "raw", getPackageName());
+        if (id == 0) {
+            id = getResources().getIdentifier(baseName, "raw", "com.pramod.loopmidi");
+        }
+        return id;
+    }
+
     private void initPresets() {
         String[] strArr = this.presetKitNames;
         strArr[0] = "Intro Patch";
@@ -408,14 +416,14 @@ public class MainActivity extends Activity {
             String suffix = i2 == 0 ? "" : String.valueOf(i2 + 1);
             int[][] iArr = this.presetKits;
             int[] iArr2 = new int[8];
-            iArr2[0] = getResources().getIdentifier("crash" + suffix, "raw", getPackageName());
-            iArr2[1] = getResources().getIdentifier("tom" + suffix, "raw", getPackageName());
-            iArr2[2] = getResources().getIdentifier("rim" + suffix, "raw", getPackageName());
-            iArr2[3] = getResources().getIdentifier("clap" + suffix, "raw", getPackageName());
-            iArr2[4] = getResources().getIdentifier("kick" + suffix, "raw", getPackageName());
-            iArr2[5] = getResources().getIdentifier("snare" + suffix, "raw", getPackageName());
-            iArr2[6] = getResources().getIdentifier("ohat" + suffix, "raw", getPackageName());
-            iArr2[7] = getResources().getIdentifier("chat" + suffix, "raw", getPackageName());
+            iArr2[0] = resolveRawResourceId("crash" + suffix);
+            iArr2[1] = resolveRawResourceId("tom" + suffix);
+            iArr2[2] = resolveRawResourceId("rim" + suffix);
+            iArr2[3] = resolveRawResourceId("clap" + suffix);
+            iArr2[4] = resolveRawResourceId("kick" + suffix);
+            iArr2[5] = resolveRawResourceId("snare" + suffix);
+            iArr2[6] = resolveRawResourceId("ohat" + suffix);
+            iArr2[7] = resolveRawResourceId("chat" + suffix);
             iArr[i2] = iArr2;
         }
     }
