@@ -387,11 +387,18 @@ public class MainActivity extends Activity {
     }
 
     private int resolveRawResourceId(String baseName) {
-        int id = getResources().getIdentifier(baseName, "raw", getPackageName());
-        if (id == 0) {
-            id = getResources().getIdentifier(baseName, "raw", "com.pramod.loopmidi");
+        String[] packageNames = {
+            getPackageName(),
+            "com.pramod.loopmidi",
+            "com.pramod.loopmidi.pro",
+            "com.pramod.loopmidi.pro.mini",
+            "pramod.octapad.spd30.mini"
+        };
+        for (String pkg : packageNames) {
+            int id = getResources().getIdentifier(baseName, "raw", pkg);
+            if (id != 0) return id;
         }
-        return id;
+        return 0;
     }
 
     private void initPresets() {
