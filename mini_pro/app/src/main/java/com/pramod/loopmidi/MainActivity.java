@@ -389,15 +389,22 @@ public class MainActivity extends Activity {
     private int resolveRawResourceId(String baseName) {
         String[] packageNames = {
             getPackageName(),
+            BuildConfig.APPLICATION_ID,
             "com.pramod.loopmidi",
             "com.pramod.loopmidi.pro",
             "com.pramod.loopmidi.pro.mini",
             "pramod.octapad.spd30.mini"
         };
         for (String pkg : packageNames) {
+            if (pkg == null || pkg.trim().isEmpty()) continue;
             int id = getResources().getIdentifier(baseName, "raw", pkg);
             if (id != 0) return id;
         }
+        // Final safety net: resource names are stored in src/drum_sounds/raw and
+        // can be absent from older package-specific caches. If all lookups fail,
+        // log the missing name so the next build step can confirm the packaged
+        // resource set instead of silently returning a zero ID.
+        Log.w(TAG, "Missing raw resource: " + baseName + " in packages: " + java.util.Arrays.toString(packageNames));
         return 0;
     }
 

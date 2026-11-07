@@ -85,23 +85,11 @@ android {
         }
     }
     sourceSets {
-        // Match the main app wiring: keep the drum pads on the dedicated
-        // src/drum_sounds/raw source-set and avoid duplicate raw resource IDs.
+        // Keep the drum raw resources available to every bundle variant. The
+        // Mini APKs were intermittently failing to resolve raw IDs when the
+        // flavor-specific source set was not the active build variant.
         main {
             assets.srcDirs = []
-        }
-        full {
-            res.srcDirs += ['src/drum_sounds']
-        }
-        loops {
-            // Keep the loop-only flavor lean and avoid duplicate raw resource IDs
-            // from the drum pack; the drum pad code resolves its own samples via
-            // the dedicated src/drum_sounds/raw set.
-        }
-        drums {
-            res.srcDirs += ['src/drum_sounds']
-        }
-        pro {
             res.srcDirs += ['src/drum_sounds']
         }
     }

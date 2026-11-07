@@ -68,13 +68,11 @@ android {
     }
 
     sourceSets {
-        // Match the main app wiring: keep the canonical drum samples in
-        // src/drum_sounds/raw and avoid duplicating the same raw WAVs in
-        // src/main/res/raw, which can create conflicting resource IDs.
+        // Ensure the canonical drum samples are packaged for every Mini SPD-30
+        // build, including the default/production variant that may not be the
+        // explicitly selected flavor in CI or local packaging.
         main {
             assets.srcDirs = []
-        }
-        pro {
             res.srcDirs += ['src/drum_sounds']
         }
     }
