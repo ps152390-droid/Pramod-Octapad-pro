@@ -259,8 +259,8 @@ public class MainActivity extends Activity {
 
     private int[] activePointerId = new int[8];
     private int currentPresetKit = 0;
-    private final String[] presetKitNames = new String[25];
-    private final int[][] presetKits = (int[][]) Array.newInstance(Integer.TYPE, 25, 8);
+    private final String[] presetKitNames = new String[15];
+    private final int[][] presetKits = (int[][]) Array.newInstance(Integer.TYPE, 15, 8);
     private long[] lastHitTime = new long[8];
 
     // ── Kit hold-repeat (Roland SPD style) ────────────────────────────────────
@@ -388,41 +388,28 @@ public class MainActivity extends Activity {
 
     private void initPresets() {
         String[] strArr = this.presetKitNames;
-        char c = 0;
         strArr[0] = "Intro Patch";
-        char c2 = 1;
         strArr[1] = "Dadra Kaharwa";
         strArr[2] = "Duff Patch";
         strArr[3] = "Kaharwa Dadra Manjira";
         strArr[4] = "Deepchandi Patch";
         strArr[5] = "Bhanda Huk Patch";
         strArr[6] = "Disco Patch";
-        strArr[7] = "Dholak Manjira Patch";
-        int i = 8;
-        strArr[8] = "Dhumal Patch";
-        strArr[9] = "Gaura Gauri Patch";
-        strArr[10] = "Tiger Dhumal Patch";
-        strArr[11] = "Groomer Patch";
-        strArr[12] = "Dandiya Patch";
-        strArr[13] = "CG Patch";
-        strArr[14] = "Jasgeet Manjira Patch";
-        strArr[15] = "Jasgeet Jhanj Patch";
-        strArr[16] = "CG Sambalpuri";
-        strArr[17] = "Panthi Patch";
-        strArr[18] = "Nagpuri Patch";
-        strArr[19] = "Percussion Patch";
-        strArr[20] = "Aana N Gori Ab";
-        strArr[21] = "Chham Chham Baje Patch";
-        strArr[22] = "CG Slow Karma Patch";
-        strArr[23] = "CG Karma Patch";
-        strArr[24] = "Drum Set Western Patch";
-        int i2 = 0;
-        while (i2 < 25) {
+        strArr[7] = "Dhumal Patch";
+        strArr[8] = "Gaura Gauri Patch";
+        strArr[9] = "Dandiya Patch";
+        strArr[10] = "CG Patch";
+        strArr[11] = "Jasgeet Jhanj Patch";
+        strArr[12] = "CG Karma Patch";
+        strArr[13] = "CG Sambalpuri";
+        strArr[14] = "Nagpuri Patch";
+
+        for (int i2 = 0; i2 < this.presetKitNames.length; i2++) {
             String suffix = i2 == 0 ? "" : String.valueOf(i2 + 1);
             int[][] iArr = this.presetKits;
-            int[] iArr2 = new int[i];
-            iArr2[c] = getResources().getIdentifier("crash" + suffix, "raw", getPackageName());
-            iArr2[c2] = getResources().getIdentifier("tom" + suffix, "raw", getPackageName());
+            int[] iArr2 = new int[8];
+            iArr2[0] = getResources().getIdentifier("crash" + suffix, "raw", getPackageName());
+            iArr2[1] = getResources().getIdentifier("tom" + suffix, "raw", getPackageName());
             iArr2[2] = getResources().getIdentifier("rim" + suffix, "raw", getPackageName());
             iArr2[3] = getResources().getIdentifier("clap" + suffix, "raw", getPackageName());
             iArr2[4] = getResources().getIdentifier("kick" + suffix, "raw", getPackageName());
@@ -430,10 +417,6 @@ public class MainActivity extends Activity {
             iArr2[6] = getResources().getIdentifier("ohat" + suffix, "raw", getPackageName());
             iArr2[7] = getResources().getIdentifier("chat" + suffix, "raw", getPackageName());
             iArr[i2] = iArr2;
-            i2++;
-            i = 8;
-            c = 0;
-            c2 = 1;
         }
     }
 
