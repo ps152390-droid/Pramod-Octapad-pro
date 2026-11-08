@@ -3,13 +3,16 @@ package pramod.octapad.spd30.mini;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.util.Log;
+import android.util.SparseIntArray;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +52,8 @@ public class AudioEngine {
     private final Context context;
     private long  nativeHandle    = 0L;
     private boolean nativeAvailable = false;
+    private SoundPool fallbackSoundPool;
+    private final SparseIntArray fallbackPadSampleIds = new SparseIntArray();
 
     // ── JNI declarations ──────────────────────────────────────────────────────
     // nativeSR/nativeBurst: pass AudioManager values so C++ can configure
@@ -163,6 +168,10 @@ public class AudioEngine {
             Log.e(TAG, "Native engine not available", e);
         }
 
+        if (!nativeAvailable) {
+            setupFallbackAudio();
+        }
+
         // Probe optional JNI symbols — pads not loaded yet so CMD_PLAY is ignored
         if (nativeAvailable) {
             try { nativePlayLoop(0, 0f, 1f, 1f); hasNativePlayLoop = true; }
@@ -177,6 +186,19 @@ public class AudioEngine {
             catch (UnsatisfiedLinkError e) { Log.w(TAG, "nativePlaySampleSP not in .so"); }
             catch (Exception ignored)      { hasNativePlaySampleSP = true; }
         }
+    }
+
+    private void setupFallbackAudio() {
+        if (fallbackSoundPool != null) return;
+        AudioAttributes attrs = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        fallbackSoundPool = new SoundPool.Builder()
+                .setMaxStreams(PAD_COUNT)
+                .setAudioAttributes(attrs)
+                .build();
+        Log.w(TAG, "Using SoundPool fallback because native audio engine is unavailable");
     }
 
     /** Returns the sample rate this engine is running at (device native SR). */
@@ -322,7 +344,20 @@ public class AudioEngine {
     public SampleData loadRawSound(int padIndex, int resId)
             throws Resources.NotFoundException, IOException {
         try {
-            if (!nativeAvailable || !validPad(padIndex)) return null;
+            if (!validPad(padIndex)) return null;
+            if (!nativeAvailable) {
+                if (fallbackSoundPool == null) setupFallbackAudio();
+                int sampleId = fallbackSoundPool.load(context, resId, 1);
+                if (sampleId == 0) {
+                    Log.e(TAG, "loadRawSound: fallback load failed resId=" + resId);
+                    return null;
+                }
+                fallbackPadSampleIds.put(padIndex, sampleId);
+                SampleData sd = new SampleData();
+                sd.soundId = resId;
+                sd.loaded = true;
+                return sd;
+            }
             InputStream is  = context.getResources().openRawResource(resId);
             byte[]      raw = readFully(is);
             is.close();
@@ -402,10 +437,25 @@ public class AudioEngine {
                            float eqLow, float eqMid, float eqHigh,
                            int chokeGroup, float attackMs, float releaseMs, float pan) {
         try {
-            if (!nativeAvailable || sample == null || !sample.loaded) return;
+            if (sample == null || !sample.loaded) return;
             float vol  = Math.max(0f, Math.min(1f, volume));
             float spd  = Math.max(0.1f, Math.min(4f, speed));
             float rate = Math.max(0.1f, Math.min(8f, pitch));
+            if (!nativeAvailable && fallbackSoundPool != null) {
+                int sampleId = fallbackPadSampleIds.get(padIndex, 0);
+                if (sampleId == 0) {
+                    sampleId = fallbackPadSampleIds.get(sample.soundId, 0);
+                }
+                if (sampleId != 0) {
+                    float playbackRate = Math.max(0.5f, Math.min(2f, spd * rate));
+                    int loopCount = (loopMode == 1) ? -1 : 0;
+                    fallbackSoundPool.play(sampleId, vol, vol, 1, loopCount, playbackRate);
+                    return;
+                }
+                Log.w(TAG, "No fallback sample registered for pad=" + padIndex + "; native and fallback audio unavailable");
+                return;
+            }
+            if (!nativeAvailable) return;
             if (loopMode == 1 && hasNativePlayLoop) {
                 nativePlayLoop(padIndex, vol, spd, rate);
             } else if (hasNativePlaySampleSP) {

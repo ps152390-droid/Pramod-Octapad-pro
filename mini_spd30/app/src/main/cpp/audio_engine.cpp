@@ -2,6 +2,136 @@
 #include <oboe/Oboe.h>
 #include <android/log.h>
 extern "C" {
+
+// Compatibility layer: older native libraries and stale package builds may still
+// expect the previous Java package name. The current Mini apps live under a renamed
+// package, so we export both names and forward to the current implementation.
+JNIEXPORT jlong JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeCreateAudioEngine(
+        JNIEnv* env, jobject obj, jint nativeSR, jint nativeBurst) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeCreateAudioEngine(env, obj, nativeSR, nativeBurst);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeDestroyAudioEngine(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeDestroyAudioEngine(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeLoadSample(
+        JNIEnv* env, jobject obj, jint padIdx, jshortArray arr, jint numFrames, jint channels) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeLoadSample(env, obj, padIdx, arr, numFrames, channels);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlaySample(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat pitch,
+        jboolean delayOn, jfloat delayMs, jfloat delayLevel,
+        jfloat eqLow, jfloat eqMid, jfloat eqHigh,
+        jint chokeGroup, jfloat attackMs, jfloat releaseMs) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlaySample(env, obj, padIdx, volume, pitch, delayOn, delayMs,
+            delayLevel, eqLow, eqMid, eqHigh, chokeGroup, attackMs, releaseMs);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlaySampleSP(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch,
+        jboolean delayOn, jfloat delayMs, jfloat delayLevel,
+        jfloat eqLow, jfloat eqMid, jfloat eqHigh,
+        jint chokeGroup, jfloat attackMs, jfloat releaseMs, jfloat pan) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlaySampleSP(env, obj, padIdx, volume, speed, pitch,
+            delayOn, delayMs, delayLevel, eqLow, eqMid, eqHigh, chokeGroup,
+            attackMs, releaseMs, pan);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlayLoop(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlayLoop(env, obj, padIdx, volume, speed, pitch);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlayLoopSP(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch, jfloat pan) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlayLoopSP(env, obj, padIdx, volume, speed, pitch, pan);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopSpeedPitch(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch, jfloat pan) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeUpdateLoopSpeedPitch(env, obj, padIdx, volume, speed, pitch, pan);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopPitch(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat pitch) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeUpdateLoopSpeedPitch(env, obj, padIdx, volume, 1.f, pitch, 0.f);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopAll(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopAll(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopPad(JNIEnv* env, jobject obj, jint padIdx) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopPad(env, obj, padIdx);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeReleasePad(JNIEnv* env, jobject obj, jint padIdx, jfloat releaseMs) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeReleasePad(env, obj, padIdx, releaseMs);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeReinitStream(
+        JNIEnv* env, jobject obj, jint nativeSR, jint nativeBurst) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeReinitStream(env, obj, nativeSR, nativeBurst);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopStream(JNIEnv* env, jobject obj) {
+    // no-op wrapper; current implementation does not expose a legacy stopStream alias
+    (void)env; (void)obj;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeGetAudioSessionId(JNIEnv* env, jobject obj) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetAudioSessionId(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeSetGlobalEQ(
+        JNIEnv* env, jobject obj, jfloat lowDB, jfloat midDB, jfloat highDB) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeSetGlobalEQ(env, obj, lowDB, midDB, highDB);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStartRecording(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStartRecording(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopRecording(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopRecording(env, obj);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeGetRecordedFrameCount(JNIEnv* env, jobject obj) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetRecordedFrameCount(env, obj);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeGetRecordedPcm(
+        JNIEnv* env, jobject obj, jshortArray out) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetRecordedPcm(env, obj, out);
+}
 #include "sonic.h"
 }
 #include <cstring>
@@ -1250,11 +1380,141 @@ static AudioEngineImpl* getEngine(JNIEnv* env, jobject obj) {
 
 extern "C" {
 
+// Compatibility layer: older native libraries and stale package builds may still
+// expect the previous Java package name. The current Mini apps live under a renamed
+// package, so we export both names and forward to the current implementation.
+JNIEXPORT jlong JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeCreateAudioEngine(
+        JNIEnv* env, jobject obj, jint nativeSR, jint nativeBurst) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeCreateAudioEngine(env, obj, nativeSR, nativeBurst);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeDestroyAudioEngine(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeDestroyAudioEngine(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeLoadSample(
+        JNIEnv* env, jobject obj, jint padIdx, jshortArray arr, jint numFrames, jint channels) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeLoadSample(env, obj, padIdx, arr, numFrames, channels);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlaySample(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat pitch,
+        jboolean delayOn, jfloat delayMs, jfloat delayLevel,
+        jfloat eqLow, jfloat eqMid, jfloat eqHigh,
+        jint chokeGroup, jfloat attackMs, jfloat releaseMs) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlaySample(env, obj, padIdx, volume, pitch, delayOn, delayMs,
+            delayLevel, eqLow, eqMid, eqHigh, chokeGroup, attackMs, releaseMs);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlaySampleSP(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch,
+        jboolean delayOn, jfloat delayMs, jfloat delayLevel,
+        jfloat eqLow, jfloat eqMid, jfloat eqHigh,
+        jint chokeGroup, jfloat attackMs, jfloat releaseMs, jfloat pan) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlaySampleSP(env, obj, padIdx, volume, speed, pitch,
+            delayOn, delayMs, delayLevel, eqLow, eqMid, eqHigh, chokeGroup,
+            attackMs, releaseMs, pan);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlayLoop(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlayLoop(env, obj, padIdx, volume, speed, pitch);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativePlayLoopSP(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch, jfloat pan) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativePlayLoopSP(env, obj, padIdx, volume, speed, pitch, pan);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopSpeedPitch(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat speed, jfloat pitch, jfloat pan) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeUpdateLoopSpeedPitch(env, obj, padIdx, volume, speed, pitch, pan);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopPitch(
+        JNIEnv* env, jobject obj,
+        jint padIdx, jfloat volume, jfloat pitch) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeUpdateLoopSpeedPitch(env, obj, padIdx, volume, 1.f, pitch, 0.f);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopAll(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopAll(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopPad(JNIEnv* env, jobject obj, jint padIdx) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopPad(env, obj, padIdx);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeReleasePad(JNIEnv* env, jobject obj, jint padIdx, jfloat releaseMs) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeReleasePad(env, obj, padIdx, releaseMs);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeReinitStream(
+        JNIEnv* env, jobject obj, jint nativeSR, jint nativeBurst) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeReinitStream(env, obj, nativeSR, nativeBurst);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopStream(JNIEnv* env, jobject obj) {
+    // no-op wrapper; current implementation does not expose a legacy stopStream alias
+    (void)env; (void)obj;
+}
+
+JNIEXPORT jint JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeGetAudioSessionId(JNIEnv* env, jobject obj) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetAudioSessionId(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeSetGlobalEQ(
+        JNIEnv* env, jobject obj, jfloat lowDB, jfloat midDB, jfloat highDB) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeSetGlobalEQ(env, obj, lowDB, midDB, highDB);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStartRecording(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStartRecording(env, obj);
+}
+
+JNIEXPORT void JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeStopRecording(JNIEnv* env, jobject obj) {
+    Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopRecording(env, obj);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeGetRecordedFrameCount(JNIEnv* env, jobject obj) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetRecordedFrameCount(env, obj);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_pramod_loopmidi_AudioEngine_nativeGetRecordedPcm(
+        JNIEnv* env, jobject obj, jshortArray out) {
+    return Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetRecordedPcm(env, obj, out);
+}
+
 // nativeSR:    pass AudioManager.getProperty(PROPERTY_OUTPUT_SAMPLE_RATE)
 // nativeBurst: pass AudioManager.getProperty(PROPERTY_OUTPUT_FRAMES_PER_BUFFER)
 // Matching these to the device hardware avoids internal Android resampling (~20-40 ms latency)
 JNIEXPORT jlong JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeCreateAudioEngine(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeCreateAudioEngine(
         JNIEnv*, jobject, jint nativeSR, jint nativeBurst) {
     auto* e = new AudioEngineImpl();
     if (!e->init((int)nativeSR, (int)nativeBurst)) { delete e; return 0L; }
@@ -1262,12 +1522,12 @@ Java_com_pramod_loopmidi_AudioEngine_nativeCreateAudioEngine(
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeDestroyAudioEngine(JNIEnv* env, jobject obj) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeDestroyAudioEngine(JNIEnv* env, jobject obj) {
     delete getEngine(env, obj);
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeLoadSample(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeLoadSample(
         JNIEnv* env, jobject obj, jint padIdx, jshortArray arr, jint numFrames, jint channels) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (!e) return;
@@ -1277,7 +1537,7 @@ Java_com_pramod_loopmidi_AudioEngine_nativeLoadSample(
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativePlaySample(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativePlaySample(
         JNIEnv* env, jobject obj,
         jint padIdx, jfloat volume, jfloat pitch,
         jboolean delayOn, jfloat delayMs, jfloat delayLevel,
@@ -1296,7 +1556,7 @@ Java_com_pramod_loopmidi_AudioEngine_nativePlaySample(
 // pitch = pitch-shift multiplier on top (1.0 = normal, 2.0 = octave up)
 // Combined effect: rate = speed × pitch via linear resampling in the render loop.
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativePlaySampleSP(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativePlaySampleSP(
         JNIEnv* env, jobject obj,
         jint padIdx, jfloat volume, jfloat speed, jfloat pitch,
         jboolean delayOn, jfloat delayMs, jfloat delayLevel,
@@ -1314,7 +1574,7 @@ Java_com_pramod_loopmidi_AudioEngine_nativePlaySampleSP(
 // speed = time-stretch (1.0 = normal, 2.0 = 2x faster with same pitch)
 // pitch = pitch-shift   (1.0 = normal, 2.0 = one octave up at same speed)
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativePlayLoop(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativePlayLoop(
         JNIEnv* env, jobject obj,
         jint padIdx, jfloat volume, jfloat speed, jfloat pitch) {
     AudioEngineImpl* e = getEngine(env, obj);
@@ -1324,7 +1584,7 @@ Java_com_pramod_loopmidi_AudioEngine_nativePlayLoop(
 
 // nativePlayLoopSP: start loop with independent speed + pitch
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativePlayLoopSP(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativePlayLoopSP(
         JNIEnv* env, jobject obj,
         jint padIdx, jfloat volume, jfloat speed, jfloat pitchShift, jfloat pan) {
     AudioEngineImpl* e = getEngine(env, obj);
@@ -1333,7 +1593,7 @@ Java_com_pramod_loopmidi_AudioEngine_nativePlayLoopSP(
 
 // nativeUpdateLoopSpeedPitch: live update speed + pitch without restarting loop
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopSpeedPitch(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeUpdateLoopSpeedPitch(
         JNIEnv* env, jobject obj,
         jint padIdx, jfloat volume, jfloat speed, jfloat pitch, jfloat pan) {
     AudioEngineImpl* e = getEngine(env, obj);
@@ -1342,7 +1602,7 @@ Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopSpeedPitch(
 
 // Keep old nativeUpdateLoopPitch for backward compatibility
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopPitch(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeUpdateLoopPitch(
         JNIEnv* env, jobject obj,
         jint padIdx, jfloat volume, jfloat pitch) {
     AudioEngineImpl* e = getEngine(env, obj);
@@ -1350,19 +1610,19 @@ Java_com_pramod_loopmidi_AudioEngine_nativeUpdateLoopPitch(
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeStopAll(JNIEnv* env, jobject obj) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopAll(JNIEnv* env, jobject obj) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (e) e->stopAll();
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeStopPad(JNIEnv* env, jobject obj, jint padIdx) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopPad(JNIEnv* env, jobject obj, jint padIdx) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (e) e->stopPad((int)padIdx);
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeReleasePad(JNIEnv* env, jobject obj, jint padIdx, jfloat releaseMs) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeReleasePad(JNIEnv* env, jobject obj, jint padIdx, jfloat releaseMs) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (e) e->releasePad((int)padIdx, (float)releaseMs);
 }
@@ -1373,7 +1633,7 @@ Java_com_pramod_loopmidi_AudioEngine_nativeReleasePad(JNIEnv* env, jobject obj, 
 // All sample data and voice active-flags are preserved so loops resume
 // seamlessly on the new output device.
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeReinitStream(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeReinitStream(
         JNIEnv* env, jobject obj, jint nativeSR, jint nativeBurst) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (e) e->init((int)nativeSR, (int)nativeBurst);
@@ -1384,19 +1644,19 @@ Java_com_pramod_loopmidi_AudioEngine_nativeReinitStream(
 // onStop() to avoid competing with another activity's stream, while keeping
 // the loaded kit intact for a fast reinit via nativeReinitStream on resume.
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeStopStream(JNIEnv* env, jobject obj) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopStream(JNIEnv* env, jobject obj) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (e) e->stopStream();
 }
 
 JNIEXPORT jint JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeGetAudioSessionId(JNIEnv* env, jobject obj) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetAudioSessionId(JNIEnv* env, jobject obj) {
     AudioEngineImpl* e = getEngine(env, obj);
     return e ? e->audioSessionId : 0;
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeSetGlobalEQ(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeSetGlobalEQ(
         JNIEnv* env, jobject obj, jfloat lowDB, jfloat midDB, jfloat highDB) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (!e) return;
@@ -1408,26 +1668,26 @@ Java_com_pramod_loopmidi_AudioEngine_nativeSetGlobalEQ(
 
 // ── Internal/system-audio recording (post-mix tap of the engine's own output) ──
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeStartRecording(JNIEnv* env, jobject obj) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeStartRecording(JNIEnv* env, jobject obj) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (e) e->startRecording();
 }
 
 JNIEXPORT void JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeStopRecording(JNIEnv* env, jobject obj) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeStopRecording(JNIEnv* env, jobject obj) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (e) e->stopRecording();
 }
 
 JNIEXPORT jint JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeGetRecordedFrameCount(JNIEnv* env, jobject obj) {
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetRecordedFrameCount(JNIEnv* env, jobject obj) {
     AudioEngineImpl* e = getEngine(env, obj);
     return e ? (jint)e->getRecordedFrameCount() : 0;
 }
 
 // Fills `out` with up to out.length recorded PCM frames; returns count copied.
 JNIEXPORT jint JNICALL
-Java_com_pramod_loopmidi_AudioEngine_nativeGetRecordedPcm(
+Java_pramod_octapad_spd30_mini_AudioEngine_nativeGetRecordedPcm(
         JNIEnv* env, jobject obj, jshortArray out) {
     AudioEngineImpl* e = getEngine(env, obj);
     if (!e || !out) return 0;
